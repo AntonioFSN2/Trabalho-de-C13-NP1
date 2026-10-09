@@ -127,6 +127,68 @@ Requisitos: MATLAB R2019a ou superior com Control System Toolbox (`tf`, `lsim`).
 - [ ] Interface gráfica (Figuras 11 e 12 do enunciado)
 - [ ] Parte teórica: descrição da planta, sensores/atuadores, perturbações e faixas de operação
 
+## 9. Interface gráfica (IHM)
+
+Item 7 da parte prática (Figuras 11 e 12 do enunciado). Arquivo: `interface/IHM_PID.m`.
+
+### Como abrir
+
+Requisitos: MATLAB R2019a ou superior, com Control System Toolbox.
+
+```matlab
+% na pasta raiz do repositório
+addpath interface
+IHM_PID
+```
+
+A interface só chama as funções de cálculo do grupo:
+
+| Função | Onde está | Uso |
+|---|---|---|
+| `sintonia_imc(k, tau, theta, lambda)`, `sintonia_cohen_coon(k, tau, theta)` | raiz (oficial) | Sintonia do PID |
+| `M = simular_malha(G, Kp, Ti, Td)` | raiz (oficial) | Malha fechada com PID |
+| `[tr, ts, overshoot] = calcular_metricas(M)` | raiz (oficial) | tr, ts e Mp via `stepinfo` |
+| `carregar_dataset` | `stubs/` (provisória) | Lê o arquivo `.mat` e valida o dataset |
+| `identificar_smith`, `identificar_sundaresan`, `ajuste_fino` | `stubs/` (provisória) | Identificação |
+| `calcular_eqm` | `stubs/` (provisória) | Erro quadrático médio |
+
+Ao abrir, a interface adiciona a raiz do repositório ao path e a pasta `stubs/` **no fim** dele. Assim, as versões oficiais sempre têm prioridade. Quando as funções de identificação oficiais forem criadas na raiz com as mesmas assinaturas, os stubs deixam de ser usados e podem ser apagados.
+
+Para conferir os valores de referência, execute `testes_interface.m` na raiz. Os testes de identificação e da própria interface só rodam se o `Forno_G5.mat` estiver na raiz.
+
+### Fluxo de uso
+
+1. **Início:** título, grupo, integrantes e instruções. Para preencher grupo e integrantes de forma permanente, edite as constantes `GRUPO` e `INTEGRANTES` no topo de `IHM_PID.m`.
+2. **Identificação:**
+   - Clique em **Escolher Arquivo** e selecione o `.mat`. O dataset é validado: existência das variáveis `t`, `Degrau` e `Saida`, tamanhos iguais, amostragem uniforme e presença de degrau.
+   - Se o dataset for inválido, aparece um alerta e nada é liberado.
+   - Com um dataset válido, são calculados Smith, Sundaresan e Smith ajustado. A lista vem com o método de **menor EQM** selecionado, e o gráfico mostra os dados e o modelo escolhido.
+3. **Controle PID:**
+   - **Método:** escolha IMC ou Cohen e Coon. Kp, Ti e Td são calculados e o gráfico é atualizado automaticamente a cada troca de método ou de λ. O λ padrão é 4θ.
+   - **Manual:** digite Kp, Ti e Td (vírgula ou ponto decimal) e clique em **Sintonizar**. A estabilidade é verificada antes de simular, com `isstable(simular_malha(pade(G,3), Kp, Ti, Td))`. Se a malha for instável, aparece um alerta e nada é plotado.
+   - O **SetPoint** começa no valor final da saída do dataset. A simulação é incremental: em desvio a partir da temperatura inicial y0, com o gráfico em valores absolutos.
+   - tr, ts (critério de 2%) e Mp aparecem nos campos e marcados no gráfico.
+   - **Exportar** salva o gráfico em PNG. No R2019a, a figura é copiada para uma `figure` invisível, porque `exportgraphics` só existe a partir do R2020a.
+
+### Regras de bloqueio dos campos
+
+| Campo | Situação |
+|---|---|
+| Aba Controle PID | Bloqueada até um dataset válido ser carregado |
+| k, τ, θ, EQM (Identificação) | Sempre somente leitura |
+| k, τ, θ (Controle PID) | Sempre somente leitura; vêm da identificação selecionada |
+| tr, ts, Mp | Sempre somente leitura |
+| Lista de métodos | Habilitada só no modo **Método** |
+| λ | Habilitado só no modo **Método** com **IMC**; aviso se λ/θ ≤ 0,8 |
+| Kp, Ti, Td e botões de limpar (×) | Editáveis só no modo **Manual**; no modo Método mostram os valores calculados, bloqueados |
+| Sintonizar | Habilitado só no modo **Manual**; exige Kp > 0, Ti > 0 e Td ≥ 0 |
+
+### Observações
+
+- **Novo método de sintonia** (por exemplo, CHR sem sobrevalor): basta adicionar uma linha em `metodosDisponiveis` dentro de `IHM_PID.m`, com o nome, se usa λ e a função que devolve `[Kp, Ti, Td]`.
+- **Arquivos `.m` só com caracteres ASCII:** o R2019a no Windows não lê arquivos `.m` em UTF-8. Por isso, os textos com acento na interface são escritos como entidades (`&ccedil;`, `&theta;`, ...) e convertidos por `IHM_PID.tx`.
+- **PID na forma ideal:** o `simular_malha` usa a forma ideal `Kp(1 + 1/(Ti·s) + Td·s)`. As métricas vêm do `stepinfo` do sistema; a curva do gráfico vem de `step` com o degrau escalado pelo SP em desvio.
+
 ## Referências
 
 - C. L. Smith. *Process Control and Instrumentation Technology*. Addison-Wesley, 1972.
