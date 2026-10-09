@@ -107,8 +107,13 @@ classdef IHM_PID < matlab.apps.AppBase
     end
 
     properties (Constant, Access = private)
-        COR_LEITURA = [0.94 0.94 0.94]  % fundo dos campos somente leitura
-        COR_AVISO   = [0.80 0.10 0.10]
+        % Cores fixas de fundo E de texto, para ficar legivel tanto no tema
+        % claro quanto no escuro (R2025a+)
+        COR_LEITURA  = [1 1 1]           % fundo dos campos somente leitura
+        COR_EDITAVEL = [1 1 1]           % fundo dos campos editaveis
+        COR_TEXTO    = [0.10 0.10 0.10]  % texto dentro das caixas
+        COR_AVISO    = [0.85 0.15 0.15]
+        COR_OK       = [0.15 0.60 0.15]
     end
 
     %% Metodos publicos auxiliares (usados tambem pelo testes_interface.m)
@@ -142,7 +147,7 @@ classdef IHM_PID < matlab.apps.AppBase
             app.MetodoIdentDropDown.Value = iMelhor;
 
             app.ArquivoLabel.Text = ['Arquivo: ' app.Dados.arquivo];
-            app.ArquivoLabel.FontColor = [0 0 0];
+            app.ArquivoLabel.FontColor = app.COR_OK;
             app.atualizarComparacao(iMelhor);
             app.atualizarRotulosUnidade();
             app.SPField.Value = round(app.Dados.yFinal, 2);
@@ -336,11 +341,12 @@ classdef IHM_PID < matlab.apps.AppBase
             editavel = IHM_PID.onoff(carregado && manual);
             corPID = app.COR_LEITURA;
             if carregado && manual
-                corPID = [1 1 1];
+                corPID = app.COR_EDITAVEL;
             end
             for campo = [app.KpField, app.TiField, app.TdField]
                 campo.Editable = editavel;
                 campo.BackgroundColor = corPID;
+                campo.FontColor = app.COR_TEXTO;
             end
             app.LimparKpButton.Enable   = editavel;
             app.LimparTiButton.Enable   = editavel;
@@ -744,6 +750,7 @@ classdef IHM_PID < matlab.apps.AppBase
             app.InstrucoesTextArea.Position = [200 60 710 190];
             app.InstrucoesTextArea.Editable = 'off';
             app.InstrucoesTextArea.BackgroundColor = app.COR_LEITURA;
+            app.InstrucoesTextArea.FontColor = app.COR_TEXTO;
             app.InstrucoesTextArea.Value = tx({ ...
                 ['1. Na aba Identifica&ccedil;&atilde;o, clique em "Escolher Arquivo" e ' ...
                  'selecione o dataset (.mat).'], ...
@@ -794,6 +801,7 @@ classdef IHM_PID < matlab.apps.AppBase
             app.ComparacaoTextArea.Position = [20 240 300 78];
             app.ComparacaoTextArea.Editable = 'off';
             app.ComparacaoTextArea.BackgroundColor = app.COR_LEITURA;
+            app.ComparacaoTextArea.FontColor = app.COR_TEXTO;
             app.ComparacaoTextArea.FontName = 'Courier New';
             app.ComparacaoTextArea.Value = {''};
 
@@ -910,6 +918,7 @@ classdef IHM_PID < matlab.apps.AppBase
             campo.Position = [175 y 145 22];
             campo.Editable = 'off';
             campo.BackgroundColor = IHM_PID.COR_LEITURA;
+            campo.FontColor = IHM_PID.COR_TEXTO;
             campo.HorizontalAlignment = 'right';
         end
 
