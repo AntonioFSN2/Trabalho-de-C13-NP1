@@ -3,7 +3,7 @@
 Disciplina C13 — Sistemas Embarcados (Inatel).
 Esta seção do repositório documenta a **identificação da planta** (Forno) a partir do Ensaio da Curva de Reação, usando os métodos de **Smith** e **Sundaresan**, com ajuste fino dos parâmetros.
 
-> Integrantes: _preencher nomes_
+> Integrantes: André Rocha de Mesquita, Antonio Feliciano da Silveira Neto e João Victor Batista Costa
 
 ---
 
