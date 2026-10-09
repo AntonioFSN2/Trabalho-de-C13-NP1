@@ -21,7 +21,10 @@ classdef IHM_PID < matlab.apps.AppBase
     %% Dados do grupo (edite aqui)
     properties (Constant, Access = public)
         GRUPO       = 'Grupo 5'
-        INTEGRANTES = {''}      % um nome por celula, ex.: {'Nome 1', 'Nome 2'}
+        % Um nome por celula; acentos como entidades (ex.: '&Eacute;', '&Atilde;')
+        INTEGRANTES = {'ANDR&Eacute; ROCHA DE MESQUITA', ...
+                       'ANTONIO FELICIANO DA SILVEIRA NETO', ...
+                       'JO&Atilde;O VICTOR BATISTA COSTA'}
     end
 
     %% Componentes da interface
@@ -739,7 +742,7 @@ classdef IHM_PID < matlab.apps.AppBase
 
             app.IntegrantesTextArea = uitextarea(app.TabInicio);
             app.IntegrantesTextArea.Position = [310 300 600 132];
-            app.IntegrantesTextArea.Value = IHM_PID.INTEGRANTES;
+            app.IntegrantesTextArea.Value = tx(IHM_PID.INTEGRANTES);
 
             app.InstrucoesLabel = uilabel(app.TabInicio);
             app.InstrucoesLabel.Position = [200 255 200 22];
