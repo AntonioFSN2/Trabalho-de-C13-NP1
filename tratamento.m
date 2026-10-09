@@ -166,4 +166,4 @@ xlim([0 60])   % foco no atraso e na subida, onde os modelos diferem
 exportgraphics(gcf, fullfile(pastaFig, 'efeito_theta.png'), 'Resolution', 300);
 
 %% salvar parâmetros do modelo final (origem rastreável para a main)
-save("parametros_forno.mat", "k", "tauAjust", "thetaAjust")
+save("parametros_forno.mat", "k", "tauAjust", "thetaAjust", "yInicio")
