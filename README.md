@@ -101,31 +101,131 @@ H(s) = 0,7041 / (21,85·s + 1) · e^(−5,05·s)
 
 ## 6. Como executar
 
-Requisitos: MATLAB R2019a ou superior com Control System Toolbox (`tf`, `lsim`). `exportgraphics` exige R2020a ou superior; em versões anteriores use `saveas`.
+### Requisitos
 
-1. Coloque `Forno_G5.mat` na mesma pasta de `tratamento.m`.
-2. Execute `tratamento.m`.
-3. As variáveis finais (`k`, `tauAjust`, `thetaAjust`, `eqmAjust`) ficam no workspace e os gráficos são salvos como PNG.
+- MATLAB R2019a ou superior.
+- Control System Toolbox.
 
-## 7. Estrutura sugerida do repositório
+**Observação:** algumas rotinas de exportação utilizam `exportgraphics`, disponível a partir do MATLAB R2020a. A compatibilidade da exportação depende da rotina executada.
 
+### Identificação da planta
+
+1. Coloque o arquivo `Forno_G5.mat` na raiz do repositório.
+2. Abra o MATLAB na pasta raiz do projeto.
+3. Execute:
+
+```matlab
+tratamento
 ```
+
+O script realiza o tratamento dos dados, a identificação da planta e o ajuste fino dos parâmetros do modelo FOPDT. Os gráficos gerados são salvos como arquivos PNG.
+
+### Análise de controle
+
+Com o arquivo `parametros_forno.mat` disponível na raiz do projeto, execute:
+
+```matlab
+analise_controle
+```
+
+O script realiza as simulações e comparações de desempenho dos métodos de controle implementados.
+
+### Interface gráfica
+
+Para abrir a interface gráfica, execute:
+
+```matlab
+addpath interface
+IHM_PID
+```
+
+A interface permite carregar o dataset, visualizar os resultados da identificação e configurar a sintonia do controlador PID.
+
+### Testes
+
+Para executar os testes da interface, utilize:
+
+```matlab
+testes_interface
+```
+
+Os testes que dependem do dataset exigem que `Forno_G5.mat` esteja na raiz do repositório.
+
+## 7. Estrutura do repositório
+
+```text
 .
 ├── README.md
 ├── Forno_G5.mat
+├── parametros_forno.mat
 ├── tratamento.m
-└── figuras/
-    ├── modelos_vs_dados.png
-    └── erro_modelos.png
+├── analise_controle.m
+├── calcular_metricas.m
+├── simular_malha.m
+├── sintonia_imc.m
+├── sintonia_cohen_coon.m
+├── Respostas.md
+├── testes_interface.m
+├── interface/
+│   └── IHM_PID.m
+├── stubs/
+│   ├── ajuste_fino.m
+│   ├── calcular_eqm.m
+│   ├── carregar_dataset.m
+│   ├── identificar_smith.m
+│   ├── identificar_sundaresan.m
+│   └── private/
+│       ├── detectar_degrau.m
+│       ├── resposta_fopdt.m
+│       └── tempo_cruzamento.m
+├── figuras/
+│   ├── dados_brutos.png
+│   ├── efeito_theta.png
+│   ├── eqm_vs_tau.png
+│   ├── eqm_vs_theta.png
+│   ├── erro_smith_vs_ajustado.png
+│   ├── erro_smith_vs_sundaresan.png
+│   ├── smith_vs_ajustado.png
+│   └── smith_vs_sundaresan.png
+├── Malha_Aberta_Malha_Fechada.png
+├── Comparacao_IMC_Cohen_Coon.png
+└── Comparacao_Lambda.png
+```
 ```
 
-## 8. Próximas etapas
+Os arquivos `.m` contêm os scripts de tratamento dos dados, identificação da planta, sintonia dos controladores e análise de desempenho. A pasta `interface/` contém a interface gráfica, enquanto `stubs/` reúne as implementações provisórias utilizadas pela interface. Os arquivos PNG apresentam os gráficos gerados durante as análises.
 
-- [ ] Respostas em malha aberta e fechada (`feedback`, Padé se necessário) e comparação de tempos de subida, acomodação e erro
-- [ ] Sintonia do PID por **IMC** e **Cohen e Coon** (justificar o λ do IMC)
-- [ ] Análise do método com menor overshoot (critério do Grupo 5)
-- [ ] Interface gráfica (Figuras 11 e 12 do enunciado)
-- [ ] Parte teórica: descrição da planta, sensores/atuadores, perturbações e faixas de operação
+## 8. Controle e análise de desempenho
+
+Nesta etapa, foram realizadas as simulações em malha aberta e fechada e a análise do desempenho dos controladores PID aplicados ao modelo do forno.
+
+### Comparação entre malha aberta e fechada
+
+Foram comparadas as respostas do sistema em malha aberta e em malha fechada, considerando os tempos de subida e acomodação. Essa comparação permitiu avaliar o comportamento dinâmico do processo com e sem realimentação.
+
+### Sintonia dos controladores PID
+
+Foram implementados dois métodos de sintonia:
+
+- **IMC (Internal Model Control):** foi utilizado o parâmetro \(\lambda = 4\theta = 20,20\ \text{s}\), buscando uma resposta mais suave e sem sobrevalor.
+- **Cohen e Coon:** foi aplicado para obter os parâmetros do controlador PID e comparar seu desempenho com o método IMC.
+
+### Métricas de desempenho
+
+As respostas dos controladores foram avaliadas por meio do tempo de subida (\(t_r\)), tempo de acomodação (\(t_s\)) e overshoot.
+
+| Método | Tempo de subida | Tempo de acomodação | Overshoot |
+|---|---:|---:|---:|
+| IMC | 43,71 s | 81,22 s | 0% |
+| Cohen e Coon | 1,61 s | 45,24 s | 90,02% |
+
+### Escolha do método
+
+Considerando o critério de priorizar o menor overshoot, o método IMC apresentou o melhor resultado, com overshoot de 0%, enquanto Cohen e Coon apresentou aproximadamente 90,02%.
+
+### Parte teórica
+
+Também foram descritas as variáveis controlada e manipulada do processo, as principais perturbações consideradas e as faixas de operação do sistema.
 
 ## 9. Interface gráfica (IHM)
 
@@ -182,6 +282,12 @@ Para conferir os valores de referência, execute `testes_interface.m` na raiz. O
 | λ | Habilitado só no modo **Método** com **IMC**; aviso se λ/θ ≤ 0,8 |
 | Kp, Ti, Td e botões de limpar (×) | Editáveis só no modo **Manual**; no modo Método mostram os valores calculados, bloqueados |
 | Sintonizar | Habilitado só no modo **Manual**; exige Kp > 0, Ti > 0 e Td ≥ 0 |
+
+### Testes e limitações
+
+- Os testes automatizados podem ser executados pelo arquivo `testes_interface.m`, localizado na raiz do repositório.
+- Os testes que dependem do dataset exigem que o arquivo `Forno_G5.mat` esteja disponível na raiz.
+- As funções de identificação e cálculo do EQM localizadas em `stubs/` são implementações provisórias e devem ser substituídas pelas versões oficiais quando estas estiverem disponíveis.
 
 ### Observações
 
