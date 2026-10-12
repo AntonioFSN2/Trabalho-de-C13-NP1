@@ -191,43 +191,53 @@ Os testes que dependem do dataset exigem que `Forno_G5.mat` esteja na raiz do re
 ├── Comparacao_IMC_Cohen_Coon.png
 └── Comparacao_Lambda.png
 ```
-```
-
 Os arquivos `.m` contêm os scripts de tratamento dos dados, identificação da planta, sintonia dos controladores e análise de desempenho. A pasta `interface/` contém a interface gráfica, enquanto `stubs/` reúne as implementações provisórias utilizadas pela interface. Os arquivos PNG apresentam os gráficos gerados durante as análises.
 
 ## 8. Controle e análise de desempenho
 
-Nesta etapa, foram realizadas as simulações em malha aberta e fechada e a análise do desempenho dos controladores PID aplicados ao modelo do forno.
+Nesta etapa, foram analisadas as respostas do forno em malha aberta e em malha fechada, além do desempenho dos controladores PID sintonizados pelos métodos IMC e Cohen e Coon.
 
-### Comparação entre malha aberta e fechada
+### 8.1. Comparação entre malha aberta e malha fechada
 
-Foram comparadas as respostas do sistema em malha aberta e em malha fechada, considerando os tempos de subida e acomodação. Essa comparação permitiu avaliar o comportamento dinâmico do processo com e sem realimentação.
+A comparação entre as respostas permite observar o comportamento dinâmico do processo com e sem realimentação.
 
-### Sintonia dos controladores PID
+| Configuração | Tempo de subida | Tempo de acomodação | Overshoot |
+|---|---:|---:|---:|
+| Malha aberta | 48,00 s | 90,53 s | 0% |
+| Malha fechada, sem controlador PID | 22,70 s | 45,33 s | 0% |
 
-Foram implementados dois métodos de sintonia:
+Os resultados mostram que, nas simulações realizadas, a malha fechada apresentou menores tempos de subida e acomodação em relação à malha aberta.
 
-- **IMC (Internal Model Control):** foi utilizado o parâmetro \(\lambda = 4\theta = 20,20\ \text{s}\), buscando uma resposta mais suave e sem sobrevalor.
-- **Cohen e Coon:** foi aplicado para obter os parâmetros do controlador PID e comparar seu desempenho com o método IMC.
+### 8.2. Sintonia dos controladores PID
 
-### Métricas de desempenho
+Foram utilizados dois métodos de sintonia: IMC (*Internal Model Control*) e Cohen e Coon.
 
-As respostas dos controladores foram avaliadas por meio do tempo de subida (\(t_r\)), tempo de acomodação (\(t_s\)) e overshoot.
+Para o método IMC, adotou-se a relação lambda = 4theta. Como o atraso de transporte ajustado foi de 5,05 s, obteve-se lambda = 20,20 s.
+
+O método Cohen e Coon também foi aplicado para permitir a comparação entre as respostas dos controladores.
+
+### 8.3. Resultados dos controladores
+
+As respostas foram avaliadas pelo tempo de subida, tempo de acomodação e overshoot.
 
 | Método | Tempo de subida | Tempo de acomodação | Overshoot |
 |---|---:|---:|---:|
 | IMC | 43,71 s | 81,22 s | 0% |
 | Cohen e Coon | 1,61 s | 45,24 s | 90,02% |
 
-### Escolha do método
+O controlador Cohen e Coon apresentou uma resposta inicial mais rápida, mas com overshoot elevado. Já o IMC apresentou resposta sem overshoot, embora com tempos de subida e acomodação maiores.
 
-Considerando o critério de priorizar o menor overshoot, o método IMC apresentou o melhor resultado, com overshoot de 0%, enquanto Cohen e Coon apresentou aproximadamente 90,02%.
+### 8.4. Escolha do método
 
-### Parte teórica
+Considerando a prioridade de evitar sobrevalor na temperatura do forno, o método IMC foi considerado o mais adequado entre os dois métodos avaliados. O resultado indica um compromisso entre rapidez de resposta e redução do overshoot.
 
-Também foram descritas as variáveis controlada e manipulada do processo, as principais perturbações consideradas e as faixas de operação do sistema.
+A escolha é baseada nas métricas obtidas nas simulações, sem afirmar que o IMC é superior em todos os critérios de desempenho.
 
-## 9. Interface gráfica (IHM)
+### 8.5. Aspectos teóricos do processo
+
+A variável controlada é a temperatura do forno, medida pelo sensor. A variável manipulada é a potência fornecida à resistência de aquecimento, regulada pelo módulo PWM.
+
+A abertura da porta do forno e a entrada de ar externo podem atuar como perturbações térmicas. As faixas de operação consideradas são de 0 a 100 °C para a temperatura e de 0% a 100% para a potência do PWM.## 9. Interface gráfica (IHM)
 
 Item 7 da parte prática (Figuras 11 e 12 do enunciado). Arquivo: `interface/IHM_PID.m`.
 
