@@ -179,19 +179,18 @@ Os testes que dependem do dataset exigem que `Forno_G5.mat` esteja na raiz do re
 │       ├── resposta_fopdt.m
 │       └── tempo_cruzamento.m
 ├── figuras/
-    ├── dados_brutos.png
-    ├── efeito_theta.png
-    ├── eqm_vs_tau.png
-    ├── eqm_vs_theta.png
-    ├── erro_smith_vs_ajustado.png
-    ├── erro_smith_vs_sundaresan.png
-    ├── smith_vs_ajustado.png
-    └── smith_vs_sundaresan.png
-    ├── Malha_Aberta_Malha_Fechada.png
-    ├── Comparacao_IMC_Cohen_Coon.png
-    └── Comparacao_Lambda.png
+│   ├── dados_brutos.png
+│   ├── efeito_theta.png
+│   ├── eqm_vs_tau.png
+│   ├── eqm_vs_theta.png
+│   ├── erro_smith_vs_ajustado.png
+│   ├── erro_smith_vs_sundaresan.png
+│   ├── smith_vs_ajustado.png
+│   └── smith_vs_sundaresan.png
+├── Malha_Aberta_Malha_Fechada.png
+├── Comparacao_IMC_Cohen_Coon.png
+└── Comparacao_Lambda.png
 ```
-
 Os arquivos `.m` contêm os scripts de tratamento dos dados, identificação da planta, sintonia dos controladores e análise de desempenho. A pasta `interface/` contém a interface gráfica, enquanto `stubs/` reúne as implementações provisórias utilizadas pela interface. Os arquivos PNG apresentam os gráficos gerados durante as análises.
 
 ## 8. Controle e análise de desempenho
@@ -238,9 +237,7 @@ A escolha é baseada nas métricas obtidas nas simulações, sem afirmar que o I
 
 A variável controlada é a temperatura do forno, medida pelo sensor. A variável manipulada é a potência fornecida à resistência de aquecimento, regulada pelo módulo PWM.
 
-A abertura da porta do forno e a entrada de ar externo podem atuar como perturbações térmicas. As faixas de operação consideradas são de 0 a 100 °C para a temperatura e de 0% a 100% para a potência do PWM.
-
-## 9. Interface gráfica (IHM)
+A abertura da porta do forno e a entrada de ar externo podem atuar como perturbações térmicas. As faixas de operação consideradas são de 0 a 100 °C para a temperatura e de 0% a 100% para a potência do PWM.## 9. Interface gráfica (IHM)
 
 Item 7 da parte prática (Figuras 11 e 12 do enunciado). Arquivo: `interface/IHM_PID.m`.
 
