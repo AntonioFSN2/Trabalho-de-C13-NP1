@@ -179,17 +179,17 @@ Os testes que dependem do dataset exigem que `Forno_G5.mat` esteja na raiz do re
 │       ├── resposta_fopdt.m
 │       └── tempo_cruzamento.m
 ├── figuras/
-│   ├── dados_brutos.png
-│   ├── efeito_theta.png
-│   ├── eqm_vs_tau.png
-│   ├── eqm_vs_theta.png
-│   ├── erro_smith_vs_ajustado.png
-│   ├── erro_smith_vs_sundaresan.png
-│   ├── smith_vs_ajustado.png
-│   └── smith_vs_sundaresan.png
-├── Malha_Aberta_Malha_Fechada.png
-├── Comparacao_IMC_Cohen_Coon.png
-└── Comparacao_Lambda.png
+    ├── dados_brutos.png
+    ├── efeito_theta.png
+    ├── eqm_vs_tau.png
+    ├── eqm_vs_theta.png
+    ├── erro_smith_vs_ajustado.png
+    ├── erro_smith_vs_sundaresan.png
+    ├── smith_vs_ajustado.png
+    ├── smith_vs_sundaresan.png
+    ├── Malha_Aberta_Malha_Fechada.png
+    ├── Comparacao_IMC_Cohen_Coon.png
+    └── Comparacao_Lambda.png
 ```
 Os arquivos `.m` contêm os scripts de tratamento dos dados, identificação da planta, sintonia dos controladores e análise de desempenho. A pasta `interface/` contém a interface gráfica, enquanto `stubs/` reúne as implementações provisórias utilizadas pela interface. Os arquivos PNG apresentam os gráficos gerados durante as análises.
 
